@@ -1,3 +1,7 @@
 FROM php:8.1-fpm-buster
-RUN docker-php-ext-install mysqli pdo pdo_mysql memcached
+RUN apt update && apt -y install zlib1g-dev libmemcached-dev && printf "\n" | pecl install memcached
+
+FROM php:8.1-fpm-buster
+RUN docker-php-ext-install mysqli pdo pdo_mysql
 RUN touch /usr/local/etc/php/conf.d/date.ini && echo "date.timezone = Europe/Paris" >> /usr/local/etc/php/conf.d/date.ini
+COPY --from=0 /usr/local/lib/php/extensions/no-debug-non-zts-20210902/memcached.so /usr/local/lib/php/extensions/no-debug-non-zts-20210902/
